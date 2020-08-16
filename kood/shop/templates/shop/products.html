@@ -1,0 +1,78 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}{{product.product_name}} - KOOds{% endblock %}
+
+{% block body %}
+<div class="container " style="margin-top: 5rem;">
+        <div class="row ">
+                <div class="col-md-6 col-sm-12 ">
+                        <img style="width: 85%; " src=/media/{{product.product_image}} alt="">
+                </div>
+                <div class="col-md-6 col-sm-12">
+                        <h1 class="text-capitalize">{{product.product_name}}</h1>
+                        <h2 style="color: red;"><b>Rs.{{product.product_price}}</b></h2>
+                        <p class="text-secondary"><b>{{product.product_desc}}</b></p>
+                        
+                </div>
+        </div>
+</div>
+
+{% endblock  %}
+
+{% block js%}
+<script>
+        if (localStorage.getItem('cart') == null) {
+                cart = {};
+        }
+        else {
+                cart = JSON.parse(localStorage.getItem('cart'));
+                document.getElementById('cart').innerHTML = Object.keys(cart).length;
+        }
+
+        $('.cart').click(function () {
+                var id_string = this.id.toString();
+                if (cart[id_string] != undefined) {
+                        cart[id_string] = cart[id_string] + 1;
+                }
+                else {
+                        cart[id_string] = 1;
+                }
+                localStorage.setItem('cart', JSON.stringify(cart));
+                document.getElementById('cart').innerHTML = Object.keys(cart).length;
+                updatePopover(cart);
+
+        })
+
+        $('#pop_cart').popover()
+        document.getElementById('pop_cart').setAttribute('data-content', '<h5>Your Hunger List : </h5>');
+        function updatePopover(cart){
+                var popstring = "";
+                popstring = popstring + "<h5> Your Hunger List : </h5><div class='mx-1 my-2'>";
+                var i = 1;
+                for (var item in cart){
+                        popstring = popstring + "<b>" + i + "</b>. ";
+                        popstring = popstring + document.getElementById('name'+item).innerHTML + " | Qty : " + cart[item][0] + '<br>';
+                        i = i+1
+                };
+                popstring = popstring + "</div>"; 
+                console.log(popstring);  
+                document.getElementById('pop_cart').setAttribute('data-content',popstring);
+                $('#pop_cart').popover();
+        }
+
+        function clearCart(){
+            localStorage.clear();
+            document.getElementById('cart').innerHTML = 0;
+            var a = "";
+            a = a + "<h5>Your Hunger List is Empty!</h5>";
+            document.getElementById('pop_cart').setAttribute('data-content',a);
+            $('#pop_cart').popover('show');
+        };
+
+        
+
+
+
+</script>
+
+{% endblock %}

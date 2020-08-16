@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.14.0/css/all.css"
+        integrity="sha384-HzLeBuhoNPvSl5KYnjx0BT+WB0QEEqLprO+NBkkk5gbc67FTaL7XIGa2w1L0Xbgc" crossorigin="anonymous" />
+
+    <title>{% block title%}{% endblock %}</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><span>
+                    <h1>KOODs</h1>
+                </span></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav" style="margin-left: auto;">
+                    {% comment %}
+                    <li class="nav-item mx=2">
+                        <a class="nav-link" href="/shop" style="margin-left: 1rem;">Home</a>
+                    </li>
+                    {% endcomment %}
+                    <li>
+                        <button type="button" class="btn btn-danger ml-3" id="pop_cart" data-container="body"
+                            data-toggle="popover" data-placement="bottom" data-html="true" data-content="">
+                            Cart(<span id="cart">0</span>)
+                        </button>
+                    </li>
+                    <li class="nav-item ml-3">
+                        <button class="btn btn-primary" onclick="clearCart()" id="clearcart">
+                            Clear Cart
+                        </button>
+                    </li>
+                    <li class="nav-item ml-3">
+                        <a href="checkout/"><button class="btn btn-success" id="checkout">
+                                Place the order
+                            </button></a>
+                    </li>
+                    <li class="nav-item mx-0">
+                        <a class="nav-link" href="/contact"><button type="button" class="btn btn-light mx-2">Contact</button>
+                                
+                            </a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li>
+                        <div class="dropdown">
+                            <button class="btn btn-success dropdown-toggle mx-2" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                             WELCOME {{request.user}}
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <a class="dropdown-item" href="/logout">Logout</a>
+                              
+                            </div>
+                        
+                          </div>
+                    </li>
+                    {% else %}
+                    <li class="nav-item mx-0">
+                        <button type="button" class="btn btn-warning mx-3" data-toggle="modal"
+                        data-target="#exampleModal">
+                        Login
+                    </button>
+                </li>
+                <li class="nav-item mx-0">
+                    <button type="button" class="btn btn-info mx-1" data-toggle="modal"
+                    data-target="#exampleModal1">
+                    Register
+                </button>
+            </li>
+            {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Button trigger modal -->
+
+    <!-- register-Modal -->
+    <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">signUp here :</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/register/" method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="username">username : </label>
+                            <input type="text" class="form-control" id="username" placeholder="userame(must be only alphanumeric)"
+                                name="username" />
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email : </label>
+                            <input type="email" class="form-control" id="email" placeholder="Email" name="email" />
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password : </label>
+                            <input type="password" class="form-control" id="password" placeholder="Password"
+                                name="password" />
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm password">Confirm Password : </label>
+                            <input type="password" class="form-control" id="confirm password"
+                                placeholder="Confirm Password" name="confirm password" />
+                        </div>
+
+                        <button type="submit" class="btn btn-success">Register</button>
+                        <button type="reset" class="btn btn-primary">Reset</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Button trigger modal -->
+
+    <!--login-Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Login here :</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action='/login/' method='POST'>
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="username">username : </label>
+                            <input type="text" class="form-control" id="loginusername" placeholder="username(must be only alphanumeric)"
+                                name="loginusername" />
+                        </div>
+                        <div class="form-group">
+                            <label for=" loginpassword"> Password : </label>
+                            <input type="password" class="form-control" id="loginpassword" placeholder="Password"
+                                name="loginpassword" />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {%block body%} {%endblock%}
+
+    <footer class="conatiner-fluid mt-5" style="background-color: brown;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-sm-6 text-center" style="color: whitesmoke;">
+                    <h1>KOODs</h1>
+                </div>
+                <div class="col-md-4 col-sm-6 text-center pt-2" style="color: whitesmoke;">
+                    <h4>&copy;2020 KOODs</h4>
+                </div>
+                <div class="col-md-4 col-sm-12 text-center pt-2" style="color: whitesmoke;">
+                    <a style="transform: scale(1.5); color: whitesmoke;"
+                        href="http://www.facebook.com/karan.chouhan.184881"><i class="fab fa-facebook"></i></a>
+                    <a style="transform: scale(1.5); color: whitesmoke;" href="https://www.instagram.com/karan_ihn/"><i
+                            class="fab fa-instagram"></i></a>
+                    <a style="transform: scale(1.5); color: whitesmoke;"
+                        href="https://www.linkedin.com/in/karan-chouhan-600bb4193/"><i class="fab fa-linkedin"></i></a>
+                    <a style="transform: scale(1.5); color: whitesmoke;" href="mailto:karanchouhanihn@gmail.com"><i
+                            class="far fa-envelope"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+    {% block js %} {% endblock %}
+</body>
+
+</html>
